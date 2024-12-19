@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 
-const HomePage = () => {
+const AboutUs = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -16,13 +16,10 @@ const HomePage = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Welcome, {session.user.email}!</h1>
-      <p>You are successfully logged in.</p>
-      <p>Your User ID is: {session.user.userId}</p>
-      <button onClick={() => signOut()}>Logout</button>
-      <Link href="aboutus">About us</Link>
+      <h1>About us Page, Welcome, {session.user.email}!</h1>
+
     </div>
   );
 };
 
-export default HomePage;
+export default AboutUs;
