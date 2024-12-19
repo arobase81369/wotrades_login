@@ -3,45 +3,46 @@
 import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import NextAuth from "next-auth";
 
 const LoginPage = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [genotp, setGenotp] = useState("");
-  const [vwotpbtn, setVwotpbtn] = useState("");
-  const [vwotpsectn, setVwotpsectn] = useState("d-none");
+  const [isOtpVisible, setIsOtpVisible] = useState(false); // New state for OTP visibility
   const { status } = useSession();
   const router = useRouter();
 
-  const generateotp = async () => {
-console.log("nextauthkey");
- console.log(process.env.NEXTAUTH_SECRET);
-    // Call the external API to verify the user
-    const res = await fetch(
-      `https://wotrades.com/API/items/allusers/read?phone=${phone}`
-    );
+  const generateOtp = async () => {
+    console.log("nextauthkey");
+    console.log(process.env.NEXTAUTH_SECRET);
 
-    if (!res.ok) {
-    //  throw new Error("Unable to fetch user details");
-      alert("Not records found");
+    try {
+      // Call the external API to verify the user
+      const res = await fetch(
+        `https://wotrades.com/API/items/allusers/read?phone=${phone}`
+      );
+
+      if (!res.ok) {
+        alert("No records found");
+        return;
+      }
+
+      const user = await res.json();
+      console.log(user);
+
+      // Simulate OTP generation
+      setGenotp("123456");
+      setIsOtpVisible(true); // Show the OTP field
+    } catch (error) {
+      console.error("Error generating OTP:", error);
+      alert("Failed to generate OTP. Please try again.");
     }
-
-    const user = await res.json();
-
-     console.log(user);
-
-        setGenotp("123456");
-        setVwotpsectn("d-block");
-        setVwotpbtn("d-none");
-  }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-
-    if (otp == genotp) {
-
+    if (otp === genotp) {
       const result = await signIn("credentials", {
         redirect: false,
         phone,
@@ -49,13 +50,12 @@ console.log("nextauthkey");
       });
 
       if (result?.ok) {
-        // Redirect to home page after login
-        router.push("/");
+        router.push("/"); // Redirect to home page after login
       } else {
-        alert("Invalid phone or otp" + phone);
+        alert("Invalid phone or OTP");
       }
     } else {
-      alert("Invalid OTP" + phone);
+      alert("Invalid OTP");
     }
   };
 
@@ -69,33 +69,43 @@ console.log("nextauthkey");
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
-          {genotp}
-          <label htmlFor="phone">phone:</label><br></br>
+          <label htmlFor="phone">Phone:</label>
+          <br />
           <input
             id="phone"
             type="text"
             value={phone}
-            style={{border:"1px solid grey"}}
+            style={{ border: "1px solid grey" }}
             onChange={(e) => setPhone(e.target.value)}
             required
           />
         </div>
-        <button className={vwotpbtn} onClick={generateotp}>Send OTP </button>
-        <div className={`btn ${vwotpsectn}`}>
-        <div>
-          <label htmlFor="otp">OTP:</label><br></br>
-          <input
-            id="otp"
-            type="otp"
-            name="otp"
-            value={otp}
-            style={{border:"1px solid grey"}}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-        </div>
+
+        {/* Generate OTP Button */}
+        {!isOtpVisible && (
+          <button type="button" onClick={generateOtp}>
+            Send OTP
+          </button>
+        )}
+
+        {/* OTP Section */}
+        {isOtpVisible && (
+          <div>
+            <label htmlFor="otp">OTP:</label>
+            <br />
+            <input
+              id="otp"
+              type="text"
+              
+              value={otp}
+              style={{ border: "1px solid grey" }}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+            />
+            <br />
+            <button type="submit">Login</button>
+          </div>
+        )}
       </form>
     </div>
   );

@@ -10,10 +10,9 @@ export const authOptions = {
         otp: { label: "otp", type: "otp" },
       },
       async authorize(credentials) {
-
         // Replace this with your backend API call
 
-/*
+
          // Call the external API to verify the user
          const res = await fetch(
           `https://wotrades.com/API/items/allusers/read?phone=${credentials.phone}`
@@ -43,7 +42,7 @@ export const authOptions = {
             phone: user[0].phone
           };
         }
-*/
+
         /*
         if (user && user.success && user.data) {
           return {
@@ -54,29 +53,29 @@ export const authOptions = {
         }
           */
 
-
-    /*    const res = await fetch(`https://wotrades.com/API/items/allusers/read?phone=8686140441`, {
+        /*
+        const res = await fetch(`https://wotrades.com/API/items/allusers/read?phone=8686140441`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(credentials),
-        }); */
+        }); 
 
         const user = {
-          id: "68",
-          email: credentials.phone,
+          id: "12234",
+          email: credentials.email,
           name: "nameplease"
         };
 
-    //    if (res.ok && user) {
+      //  if (res.ok && user) {
           // Ensure the user object contains a userId
           return {
             id: user.id,
             email: user.email,
             name: user.name,
           };
-    //    }
-     //   return null;
-      
+      //  }
+      //  return null;
+      */
       },
     }),
   ],
