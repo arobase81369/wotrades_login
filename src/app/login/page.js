@@ -3,6 +3,7 @@
 import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import NextAuth from "next-auth";
 
 const LoginPage = () => {
   const [phone, setPhone] = useState("");
@@ -14,8 +15,8 @@ const LoginPage = () => {
   const router = useRouter();
 
   const generateotp = async () => {
-
-
+console.log("nextauthkey");
+ console.log(process.env.NEXTAUTH_SECRET);
     // Call the external API to verify the user
     const res = await fetch(
       `https://wotrades.com/API/items/allusers/read?phone=${phone}`
